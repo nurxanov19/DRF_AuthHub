@@ -5,6 +5,7 @@ import uuid
 
 from django.core.exceptions import ValidationError
 from api_auth.models import CustomUser, OneTimePasswordModel
+from .helper import sent_to_email
 from .serializers import AuthOneSerializers, AuthTwoSerializer
 from methodism import MESSAGE, custom_response, error_messages
 from rest_framework.authtoken.models import Token
@@ -20,6 +21,7 @@ def auth_one(request, params):
     code = ''.join([str(random.randint(1, 999999))[-1] for _ in range(6)])
     print(code)
     key = uuid.uuid4().__str__() + '=' + code
+    sent_to_email(request, 'shoxjahonnurxonov64@gmail.com', code)
     otp = OneTimePasswordModel.objects.create(phone=phone, key=key)
 
     return custom_response(True, message={'OTP': code, 'key': otp.key})
