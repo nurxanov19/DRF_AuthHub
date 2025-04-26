@@ -2,6 +2,7 @@ import datetime
 import random
 import string
 import uuid
+import re
 
 from django.core.exceptions import ValidationError
 from api_auth.models import CustomUser, OneTimePasswordModel
@@ -17,15 +18,19 @@ def auth_one(request, params):
     if not serializer.is_valid():
         return custom_response(False, message=serializer.errors)
 
-    phone = serializer.validated_data.get('phone')
+
+    received_data = serializer.validated_data.get('identifier')
     code = ''.join([str(random.randint(1, 999999))[-1] for _ in range(6)])
     print(code)
     key = uuid.uuid4().__str__() + '=' + code
 
-    #sent_to_email(request, 'shoxjahonnurxonov64@gmail.com', code)
-    send_sms_to_user(request)
+    if serializer.is_email:
+        sent_to_email(request, 'shoxjahonnurxonov64@gmail.com', code)
 
-    otp = OneTimePasswordModel.objects.create(phone=phone, key=key)
+    else:
+        send_sms_to_user(request)
+
+    otp = OneTimePasswordModel.objects.create(phone=received_data, key=key)
 
     return custom_response(True, message={'OTP': code, 'key': otp.key})
 
