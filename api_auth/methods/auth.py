@@ -25,7 +25,7 @@ def auth_one(request, params):
     key = uuid.uuid4().__str__() + '=' + code
 
     if serializer.is_email:
-        sent_to_email(request, 'shoxjahonnurxonov64@gmail.com', code)
+        sent_to_email(request, received_data, code)
 
     else:
         send_sms_to_user(request)
