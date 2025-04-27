@@ -45,5 +45,22 @@ def delete_from_basket(request, params):
     return custom_response(True, message="Deleted")
 
 
+def order(request, params):
+    baskets = Basket.objects.filter(user=request.user, status=True)
+
+    if not baskets:
+        return custom_response(False, message='Baskets mavjud emas')
+
+    order = Order.objects.create(user=request.user)
+    order.basket.set(baskets)
+
+    total = 0
+    for basket in baskets:
+        total += basket.post.price * basket.quantity
+
+    order.price = total
+    order.save()
+
+    baskets.delete()
 
 
