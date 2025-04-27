@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-
 from api_auth.models import CustomUser
 import re
 

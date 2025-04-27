@@ -3,6 +3,7 @@ import random
 import string
 import uuid
 import re
+from .helper import run_thread
 
 from django.core.exceptions import ValidationError
 from api_auth.models import CustomUser, OneTimePasswordModel
@@ -25,10 +26,9 @@ def auth_one(request, params):
     key = uuid.uuid4().__str__() + '=' + code
 
     if serializer.is_email:
-        sent_to_email(request, received_data, code)
-
+        run_thread(sent_to_email, request, received_data, code)
     else:
-        send_sms_to_user(request)
+        run_thread(send_sms_to_user, request, received_data)
 
     otp = OneTimePasswordModel.objects.create(phone=received_data, key=key)
 
