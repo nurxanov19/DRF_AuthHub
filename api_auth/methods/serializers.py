@@ -28,8 +28,6 @@ class AuthOneSerializers(serializers.Serializer):
     #     return phone
 
 
-
-
 class AuthTwoSerializer(serializers.Serializer):
 
     key = serializers.CharField(max_length=300)
